@@ -1,0 +1,18 @@
+# Python cache files
+__pycache__/
+*.pyc
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# virtual environments
+env/
+venv/
+.venv/
+
+# Anaconda environments
+conda-meta/
+
+# OS junk
+.DS_Store
+Thumbs.db
