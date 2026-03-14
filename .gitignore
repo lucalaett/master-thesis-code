@@ -5,6 +5,9 @@ __pycache__/
 # Jupyter notebook checkpoints
 .ipynb_checkpoints/
 
+# Anaconda projects
+anaconda_projects/
+
 # virtual environments
 env/
 venv/
