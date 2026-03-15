@@ -1,10 +1,10 @@
 
+import numpy as np
 
 
-def deltaT(G, chi, T, rho, delta, H, a, deltadot, m , theta, k, time):  
+def residual_helper(G, chi, T, rho, delta, H, a, deltadot, m , theta, k, time):  
     """
-    Returns deltaT according to the formulas in the thesis.
-    Standard errors are not included in the parameters or the returns. 
+    Returns Psi_X*Y + Psi_Y*X according to the formulas in the thesis
 
     Parameters [all float, all in GeV^x]
     ----------
@@ -12,22 +12,19 @@ def deltaT(G, chi, T, rho, delta, H, a, deltadot, m , theta, k, time):
 
     Returns
     -------
-    deltaT : float, delay in pulsar period 
+    Psi_X*Y + Psi_Y*X : float, delay in pulsar period 
     """
-    #Theta
     Theta = lambda t: m*t + theta
-    #Prefactor: Psi_X 
+    #Prefactors:
     preX = 4*np.pi*G*rho*delta/m**3
-    #Prefactor: Psi_Y
     preY = 8*np.pi*G*rho*deltadot/(m**2*(12*np.pi*G*rho-k**2))
-    #Calculate 2mX (f=sin) and -2mY (f=cos)
+    #2mX (f=sin), -2mY (f=cos):
     t1, t2, t3, t4 = time+a*chi, time, time+a*chi+T, time+T
     XY = lambda f : f(2*Theta(t1)) - f(2*Theta(t2)) - f(2*Theta(t3)) + f(2*Theta(t4))
-    #Calculate deltaT
-    return preX * XY(np.sin) + preY * XY(np.cos)
-
-
-
+    #X and Y:
+    X = XY(np.sin)/(2*m)
+    Y = -XY(np.cos)/(2*m)
+    return preX*Y + preY*X
 
 def timing_residual(G, chi, T, rho, delta, H, a, deltadot, m , theta, k, tend):  
     """
@@ -53,10 +50,9 @@ def timing_residual(G, chi, T, rho, delta, H, a, deltadot, m , theta, k, tend):
     -------
     R : float, timing residual 
     """
-    innerfct = lambda t: deltaT(G, chi, T, rho, delta, H, a, deltadot, m , theta, k, t)/T
-    #integration over full period = 0 -> neglegtion before integration is less expensive
-    tend = tend % (np.pi/m) 
-    return quad(innerfct, 0.0, tend)[0]
+    tend_part = residual_helper(G, chi, T, rho, delta, H, a, deltadot, m , theta, k, tend)/T
+    t0_part = residual_helper(G, chi, T, rho, delta, H, a, deltadot, m , theta, k, 0)/T
+    return tend_part - t0_part
 
 
 
