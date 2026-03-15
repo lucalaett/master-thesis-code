@@ -5,14 +5,7 @@ import numpy as np
 def residual_helper(G, chi, T, rho, delta, H, a, deltadot, m , theta, k, time):  
     """
     Returns Psi_X*Y + Psi_Y*X according to the formulas in the thesis
-
-    Parameters [all float, all in GeV^x]
-    ----------
     -> see fct: timing_residual for descritpion
-
-    Returns
-    -------
-    Psi_X*Y + Psi_Y*X : float, delay in pulsar period 
     """
     Theta = lambda t: m*t + theta
     #Prefactors:
