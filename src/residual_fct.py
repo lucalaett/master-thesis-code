@@ -12,7 +12,7 @@ def residual_helper(G, chi, T, rho, delta, H, a, deltadot, m , theta, k, time):
     preX = 4*np.pi*G*rho*delta/m**3
     preY = 8*np.pi*G*rho*deltadot/(m**2*(12*np.pi*G*rho-k**2))
     #2mX (f=sin), -2mY (f=cos):
-    t1, t2, t3, t4 = time+a*chi, time, time+a*chi+T, time+T
+    t1, t2, t3, t4 = time, time-a*chi, time+T, time-a*chi+T
     XY = lambda f : f(2*Theta(t1)) - f(2*Theta(t2)) - f(2*Theta(t3)) + f(2*Theta(t4))
     #X and Y:
     X = XY(np.sin)/(2*m)
@@ -41,11 +41,11 @@ def timing_residual(G, chi, T, rho, delta, H, a, deltadot, m , theta, k, tend):
 
     Returns
     -------
-    R : float, timing residual 
+    R : float, timing residual [GeV^-1]
     """
     tend_part = residual_helper(G, chi, T, rho, delta, H, a, deltadot, m , theta, k, tend)/T
     t0_part = residual_helper(G, chi, T, rho, delta, H, a, deltadot, m , theta, k, 0)/T
-    return tend_part - t0_part
+    return tend_part - t0_part #GeV^-1
 
 
 
