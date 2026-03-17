@@ -1,5 +1,7 @@
 
 
+import numpy as np
+
 def p_name(): 
     """
     Pulsar Jnames of pulsars measured in EPTA DR2
