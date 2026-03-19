@@ -1,0 +1,5 @@
+draw_from_red_noise_prior 0.12
+covarianceJumpProposalAM 0.24
+covarianceJumpProposalSCAM 0.47
+draw_from_dm_prior 0.12
+draw_from_prior 0.059
