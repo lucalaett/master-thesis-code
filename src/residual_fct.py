@@ -2,24 +2,23 @@
 import numpy as np
 
 
-def residual_helper(G, chi, T, rho, delta, H, a, deltadot, m , theta, k, time):  
+def residual_XY(tobs, f, T, deltaE, deltaP, a, m, theta, chi):  
     """
-    Returns Psi_X*Y + Psi_Y*X according to the formulas in the thesis
-    -> see fct: timing_residual for descritpion
+    Returns X or -Y according to the formulas in the thesis
+
+    Parameters 
+    ----------
+    tobs : float, observation time [GeV^-1]
+    f : fct, either np.sin-> returns X  or  np.cos-> returns -Y 
+    -> see fct: timing_residual for descritpion of the rest
     """
     Theta = lambda t: m*t + theta
-    #Prefactors:
-    preX = 4*np.pi*G*rho*delta/m**3
-    preY = 8*np.pi*G*rho*deltadot/(m**2*(12*np.pi*G*rho-k**2))
-    #2mX (f=sin), -2mY (f=cos):
-    t1, t2, t3, t4 = time, time-a*chi, time+T, time-a*chi+T
-    XY = lambda f : f(2*Theta(t1)) - f(2*Theta(t2)) - f(2*Theta(t3)) + f(2*Theta(t4))
-    #X and Y:
-    X = XY(np.sin)/(2*m)
-    Y = -XY(np.cos)/(2*m)
-    return preX*Y + preY*X
+    t1, t2, t3, t4 = tobs, tobs+T, tobs-a*chi, tobs-a*chi+T
+    XY = deltaE * (f(2*Theta(t1)) - f(2*Theta(t2))) - deltaP * (f(2*Theta(t3)) - f(2*Theta(t4)))
+    XY /= 2*m    
+    return XY
 
-def timing_residual(G, chi, T, rho, delta, H, a, deltadot, m , theta, k, tend):  
+def timing_residual(G, T, rho, deltaE, deltaP, H, a, tstart, tend, m , k, theta, chi):  
     """
     Returns the timing residual according to the formulas in the thesis.
     Standard errors are not included in the parameters or the returns. 
@@ -27,25 +26,32 @@ def timing_residual(G, chi, T, rho, delta, H, a, deltadot, m , theta, k, tend):
     Parameters [all float, all in GeV^x]
     ----------
     G : gravitational constant 
-    chi : comoving earth-pulsar distnace
     T : pulsar period
     rho : NSN energy density
-    delta : NSN overdensity
+    deltaE : NSN overdensity close to earth
+    deltaE : NSN overdensity close to pulsar
     H : cosmological const
     a : expansion factor
-    deltadot : (physical) time derivative of delta
+    tstart : measurement startingtime
+    tend : measurement endtime
     m : mass
     theta : phase
     k : scale 
-    tend : timespan of measurement 
+    chi : comoving earth-pulsar distnace
 
     Returns
     -------
     R : float, timing residual [GeV^-1]
     """
-    tend_part = residual_helper(G, chi, T, rho, delta, H, a, deltadot, m , theta, k, tend)/T
-    t0_part = residual_helper(G, chi, T, rho, delta, H, a, deltadot, m , theta, k, 0)/T
-    return tend_part - t0_part #GeV^-1
+    #prefactors
+    PsiX = 8*np.pi*G*rho/m**2
+    PsiY = H/m * 8*np.pi**(0.5)*G*rho/(12*np.pi*G*rho-k**2) 
+    #X and Y
+    X = lambda tobs: residual_XY(tobs, np.sin, T, deltaE, deltaP, a, m, theta, chi)
+    Y = lambda tobs: -residual_XY(tobs, np.cos, T, deltaE, deltaP, a, m, theta, chi)
+    #residual
+    R = PsiX/(2*m*T) * (Y(tend)-Y(tstart)) + PsiY/(2*m*T) * (X(tend)-X(tstart))
+    return R #GeV^-1
 
 
 
