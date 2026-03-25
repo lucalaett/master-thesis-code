@@ -1,9 +1,8 @@
-covarianceJumpProposalSCAM 0.11
-draw 0.053
-draw 0.053
-DEJump 0.32
-draw 0.053
-draw 0.11
-covarianceJumpProposalAM 0.11
-draw 0.11
-draw 0.11
+draw 0.077
+draw 0.15
+covarianceJumpProposalSCAM 0.15
+draw 0.15
+draw 0.077
+draw 0.15
+covarianceJumpProposalAM 0.15
+draw 0.077
