@@ -16,6 +16,6 @@ Install the required Python packages, then open the notebooks in the `notebooks/
 
 ## Notes
 
-The notebook * `notebooks/timingresidual_dependencies/` is completed. It is the only one needed for the thesis. 
-The notebook * `notebooks/fitting/` is not yet completed. The computational power did not suffice to include it in the thesis on time. 
+The notebook `notebooks/timingresidual_dependencies/` is completed. It is the only one needed for the thesis. 
+The notebook `notebooks/fitting/` is not yet completed. The computational power did not suffice to include it in the thesis on time. 
 Notebooks contain the analysis workflow, while reusable functions are stored in `src/thesis/`.
